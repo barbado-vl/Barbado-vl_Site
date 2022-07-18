@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brbado-vl Site", "Brbado-vl Site\Brbado-vl Site.csproj", "{15BEE2F4-1590-4D26-9B01-790543BFCC81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Barbado-vl_Site", "Barbado-vl_Site\Barbado-vl_Site.csproj", "{1871A9A5-EE0B-4F04-B0DE-33DA6E21A1BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{15BEE2F4-1590-4D26-9B01-790543BFCC81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15BEE2F4-1590-4D26-9B01-790543BFCC81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15BEE2F4-1590-4D26-9B01-790543BFCC81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15BEE2F4-1590-4D26-9B01-790543BFCC81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1871A9A5-EE0B-4F04-B0DE-33DA6E21A1BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1871A9A5-EE0B-4F04-B0DE-33DA6E21A1BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1871A9A5-EE0B-4F04-B0DE-33DA6E21A1BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1871A9A5-EE0B-4F04-B0DE-33DA6E21A1BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {32746E58-91F3-4E0B-A03D-82827349E9CA}
+		SolutionGuid = {21E24264-D469-4299-9A22-02C42F9DD9B2}
 	EndGlobalSection
 EndGlobal
