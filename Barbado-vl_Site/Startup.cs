@@ -56,8 +56,20 @@ namespace Barbado_vl_Site
                 options.SlidingExpiration = true;
             });
 
+            // настраиваем политику авторизации для admin area, требуем от пользователя имени admin
+            services.AddAuthorization(x =>
+            {
+                x.AddPolicy("AdminArea", policy => { policy.RequireRole("admin"); });
+            });
+
             // добавляем поддержку контроллеров и представлений (MVC)
-            services.AddControllersWithViews()
+            services.AddControllersWithViews(
+                // передаем админское соглашение, которую пр
+                x =>
+                {
+                    x.Conventions.Add(new AdminAreaAuthorization("Admin", "AdminArea"));
+                })
+                // вставляем совместимость с asp.net core 3.0
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddSessionStateTempDataProvider();
         }
 
@@ -81,11 +93,13 @@ namespace Barbado_vl_Site
             //подключаем аутоинфекцию и авторизацию
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseAuthentication();
+            app.UseAuthorization();
 
             //регистрируем нужные маршруты (ендпоинты)
             app.UseEndpoints(endpoints =>
             {
+                // перенаправляем пользователя admin на админскую страницу
+                endpoints.MapControllerRoute("admin", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }

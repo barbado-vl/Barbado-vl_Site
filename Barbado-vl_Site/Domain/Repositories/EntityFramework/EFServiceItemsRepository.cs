@@ -25,7 +25,7 @@ namespace Barbado_vl_Site.Domain.Repositories.EntityFramework
             return context.ServiceItems.FirstOrDefault(x => x.Id == id);
         }
 
-        public void SaveSericeItems(ServiceItem entity)
+        public void SaveSericeItems(ServiceItem entity) 
         {
             // если Id, тип Guid, пустой, т.е. равен структуре default из system.Guid, то ставим фалг добавить новую запись
             if (entity.Id == default)
