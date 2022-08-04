@@ -6,9 +6,9 @@ namespace Barbado_vl_Site.Domain.Repositories.Abstract
 {
     public interface IServiceItemsRepository
     {
-        IQueryable<ServiceItem> GetSericeItems();
-        ServiceItem GetSericeItemsById(Guid id);
-        void SaveSericeItems(ServiceItem entity);
-        void DeleteSericeItems(Guid id);
+        IQueryable<ServiceItem> GetServiceItems();
+        ServiceItem GetServiceItemById(Guid id);
+        void SaveServiceItem(ServiceItem entity);
+        void DeleteServiceItem(Guid id);
     }
 }

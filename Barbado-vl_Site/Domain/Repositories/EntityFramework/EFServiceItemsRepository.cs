@@ -15,17 +15,17 @@ namespace Barbado_vl_Site.Domain.Repositories.EntityFramework
             this.context = context;
         }
 
-        public IQueryable<ServiceItem> GetSericeItems()
+        public IQueryable<ServiceItem> GetServiceItems()
         {
             return context.ServiceItems;
         }
 
-        public ServiceItem GetSericeItemsById(Guid id)
+        public ServiceItem GetServiceItemById(Guid id)
         {
             return context.ServiceItems.FirstOrDefault(x => x.Id == id);
         }
 
-        public void SaveSericeItems(ServiceItem entity) 
+        public void SaveServiceItem(ServiceItem entity) 
         {
             // если Id, тип Guid, пустой, т.е. равен структуре default из system.Guid, то ставим фалг добавить новую запись
             if (entity.Id == default)
@@ -36,7 +36,7 @@ namespace Barbado_vl_Site.Domain.Repositories.EntityFramework
             context.SaveChanges();
         }
 
-        public void DeleteSericeItems(Guid id)
+        public void DeleteServiceItem(Guid id)
         {
             // удалять нечего, поэтому создаем новый ServiceItem и его же удаляем
             context.ServiceItems.Remove(new ServiceItem() { Id = id });

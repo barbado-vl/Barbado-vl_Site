@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Barbado_vl_Site.Domain.Entities
 {
     public abstract class EntityBase
     {
-        protected EntityBase() => DataAdded = DateTime.UtcNow;
+        protected EntityBase() => DateAdded = DateTime.UtcNow;
 
         [Required]
         public Guid Id { get; set; }
@@ -35,6 +32,6 @@ namespace Barbado_vl_Site.Domain.Entities
         public string MetaKeywords { get; set; }
 
         [DataType(DataType.Time)]
-        public DateTime DataAdded { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }
