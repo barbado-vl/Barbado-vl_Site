@@ -37,10 +37,27 @@
     - AddDBContext.cs – настройа ORM Entity Framework
     - DataManager.cs – менеджер обращения к данным
   - **/Models** – модели данных части представления (Views)
+    - /ViewComponents/SidebarViewComponents.cs – данные дляSidebar.
+    - LoginViewsModel.cs – данные требуемые от пользователя для аутентификации. 
   - **/Controllers**/… -- контроллеры для страниц исключая админские.
   - **/Views** – «представления».
+    - /Account – страница аутентификации для админа.
+    - /Home – главная страница.
+    - /Services – страница со списком услуг.
+    - /Shared – шаблон сайта.
+      - _Layout – шаблон сайта (мастер страницы), где вызываются все модулиPartial.
+      - /Components/Sidebar/Default.cshtml – sidebar.
+      - файлы-модули Partial: CssPartial, ScriptsPartial, FooterPartial, HeaderPartial, MetatagsPartial, SidebarPartial.
+    - _VeiwStart.cshtml – вызов шаблона сайта.
+    - _ViewImports.cshtml – импортируем backend часть (/Models, /Domain/Entities, /Service,/Models/ViewComponents).
   - **/Areas** – контроллер и представления для страниц администратора
+    - /Admin
+      - /Views/…
+      - /Controllers…
   - **/Service** – функциональные объекты.
+    - AdminAreaAuthorizations.cs – реализация авторизация, чтобы перенаправлять админа на страницы Admin Area вместо обычных.
+    - Config.cs – данные приложения для клиентов: имя, автор, email, строка подключения к БД.
+    - Extensions – расширение методов типов (добавляем к типу string метод CutController).
   - **/wwwroot** – bootstrap папка с стилями, шрифтами, картинками и JS скриптами, суда же вставляем файлы CK-Editor-а.
 
 
