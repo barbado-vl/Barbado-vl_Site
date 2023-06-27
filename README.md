@@ -19,16 +19,120 @@
 
 
 ## Точка входа и настройка приложения <a name="main-section-3"></a>
+*Program.cs*
+*Startup.cs*
+*/Service/Config.cs*
+
+Был использован расширенный вариант настройки и запуска приложения через IHostBuilder.
+
+В файле Program.cs точка входа в приложение, метод Main(string[] args).Внутри него вызываем экземпляр IHostBuilder, который через статический класс Host принимает настройки в виде класса Startup, а затем вызывает методы Build() и Run().
+
+Класс Startup (файл Startup.cs). В нем определяются интерфейсы принимающие свойств и настраивающие поведение приложение.
+
+*IConfiguraiotn* – задается как свойство и, далее вызывается встроенный метод Bind, в который передаем объект Config (/Service/Config.cs). Для работы приложения в Config.cs находится строка подключения к MS SQL Server.
+
+*IServiceCollection* – настройка DI.
+  - Подключение интерфейсов бизнес логики, это файлы Repositories и DataManager.cs.
+  - Подключение DbContext, в которой передается строка подключения из свойства IConfiguraiotn.
+  - Подключение и настройка Identity модели.
+  - Подключение и настройка сервиса Cookie.
+  - Подключение Авторизации с настройкой политик.
+  - Подключение сервиса MVC – AddControllersWithViews.
+
+*IApplicationBuilder* – прописываем конвейер вызовов. Порядок вызовов очень важен.
+  - app.UseStaticFiles() – устанавливает пути к файлам по умолчанию.
+  - app.UseRouting() – установка маршрутизации, по умолчанию.
+  - app.UseCookiePolicy()
+  - app.UseAuthentication()
+  - app.UseAuthorization()
+  - app.UseEndpoints() – настройка сопоставления запросов с контроллерами.
 
 
 ## «Domain» <a name="main-section-4"></a>
+Модель бизнес логики /Domain:
+  - */Entities* – схемы сущностей
+    - *EntityBase.cs* – общие данные
+    - *ServiceItem.cs* – описание услуги
+    - *TextField.cs* -- текст
+  - */Repositories* – обращения к данным
+    - */Abstract* – интерфейсы
+      - *IServiceItemsRepository.cs*
+      - *ITextFieldsRepository.cs*
+    - */EntityFramework* – реализация
+      - *EFServiceItemsRepository.cs*
+      - *EFTextFieldsRepository.cs*
+  - *AddDBContext.cs* – настройка ORM.
+  - *DataManager.cs* – менеджер обращения к данным
+
+**Entities**. Схемы объектов бизнес логики. Есть общая схема *EntityBase*, и две наследующие от ней *ServiceItem* и *TextField*.
+В схемы сущностей, для каждого свойства добавлены атрибут Display, в котором указывается запись, которая будет выводится при запросе данного свойства, и атрибут Required, указывающий, что данное свойство должно быть обязательно прописано при создании экземпляра схемы. Атрибуты берутся из библиотеки System.ComponentModel.DataAnnotations.
+
+**AddDBContext.cs**. Определяем класс, наследующий от класса DbContext, или IdentityDbContext, если будет использоваться встроенная в Entity Framework модель данных для пользователя. Задача данного класса определить схемы данных, по которым будут созданы таблицы. Для этого указываются свойства типа DbSet<T> в который передаются схемы сущностей.
+  > public DbSet<TextFiel> TextField { get; set; }
+ 
+Во вторых в конструкторе класса указываются данные подключения к «поставщику БД», тип DbContextOptions<T>, где T это название нашего класса AddDbContext. Поскольку установку свойства идет в Startup.cs, где будет создаваться экземпляр класса, то тут мы просто указываем установку свойств от родителя.
+  > public AddDbContext(DbContextOptions<AddDbContext> options) : base(options) { }
+> 
+В третьих переписываем метод создания модели БД OnModelCreating(ModelBuildre buildre), внутри пользуемся возможностью сразу же добавить в БД часть данных, а главное пользователя администратора.
+
+**Repositories**. Интерфейсы (/abstract) для каждой схемы, где заявляются методы работы со схемой данных бизнес логики. И класс реализации методов (/EntityFramework). Набор методов стандартный: получить все записи по сущности, получить одну запись, удалить запись. Обращение идет к экземпляру класса AddDbContext, который дает методы обращения к таблицам БД (DbSet<T>) и методам работы с ними. Он устанавливается как свойство класса Repository и инициализируем в его конструкторе.
+
+**DataManagr**. Класс абстракция для объединения вызова интерфейсов по каждой сущности. Через него идет обращение к классам Repositories.
 
 
 ## Контроллер <a name="main-section-5"></a>
+В структуре проекта контроллеры находятся в:
+  - /Controllers/
+    - AccountController.cs
+    - HomeController.cs
+    - ServicesController.cs
+  - /Areas/Admin/Controllers/
+    - HomeController.cs
+    - ServiceItemsController.cs
+    - TextFieldsController.cs
+
+**HomeController.cs и ServicesController.cs из папки Controllers.**
+Вызов через DI экземпляра DataManager для чтения данных из БД.
+Методы не атрибутированы. Все возвращают в качестве действия метод класса Controller View(), в который передаются данные из БД. За кулисами метода View данные встроятся в объект представления по одноименному с названием вызываемого метода и названием контроллера страницы. Пример – HomeController и метод Index() дают маршрут Views/Home/Index.cshtml.
+В ServiceController.cs в методе Index(Guid id) есть развилка, где мы переопределяем маршрут указывая имя “Show”.
+
+**AccountController.cs.** В нем Представлены методы для Аутентификации пользователя и Logout для аутентифицированного пользователя. Чтобы фильтровать доступ для класса и для методов добавлены атрибуты из AspNetCore.Authorization: [Authorize] для класса и метода Logout, [AllowAnonymous] для методов Login.
+
+Login 2 метода.
+
+* *IActionResult Login(string returnUrl)* *. Он введен для того, чтобы запомнить адрес “admin” при введении которого идет перенаправление на “account/login”. Адрес запоминается в свойстве динамического представления ViewBag.returnUrl.
+  
+* *async Task<IActionResult> Login(LoginViewModel model, string returnUrl)* *. Метод помечен атрибутом [HttpPost] и срабатывает и отправке запроса при нажатии кнопки и отправки формы из представления. Данные формы заполняют параметр model и по ним проводится аутентификация пользователя.
+
+Для аутентификации вызываются объекты UserManager<T> и SignInManager<T>. Через них идет обращение к БД и проверка пользователя. По результатам проверки идет перенаправления на страницу из параметра returnUrl (метод Redirect()) или вывод сообщения “Неверный логин или пароль”.
+
+**Контроллеры, классы, в /Areas/Admin**. Они помечены атрибутом [Area(“Admin”)]. В файле Startup.cs при DI сервиса AddControllersWithViews добавлено соглашение:
+  >x => {
+      x.Conventions.Add(new AdminAreaAuthorization(“Admin”, “AdminArea”));
+  };
+
+Оно устанавливает требование для авторизации. Политику “AdminArea” добавляем в сервис AddAuhorization. 
+  >x => {
+    x.AddPolicy(“AdminArea”, policy => { policy.RequareRole(“admin”); });
+  };
+
+Данные классы откликнуться только на запросы при пользователе прошедшем аутентификацию и имеющем роль «admin».
+
+Внутри методы редактирования помеченные атрибутом [HttpPost]. Свойство DataManager для обращения к БД и возврат метода класса Controller View().
+
+Здесь же используется метод расширения для типа String CutController, добавленный в /Service/Extensions.cs. Он используется для отрезания слова Controller от названия класса, чтобы получить маршрут для перенаправления на страницу (метод RedirecteToAction() возвращаемый в IActionResult).
 
 
 ## Models и Sidebar <a name="main-section-6"></a>
+Структура:
+  - /Models – модели данных части представления (Views)
+    - /ViewComponents
+      - SidebarViewComponents.cs
+    - LoginViewsModel.cs 
 
+LoginViewsModel.cs задает схему данных для полей на “account/login” страницы. Экземпляр класса вызывается в AccountController.cs и принимает данные из формы.
+
+SidebarViewComponents.cs. Класс наследуемый от ViewComponent. Внутри вызывает DataManager и метод возвращающий данные из БД и добавляющий их в компонент по адресу “Default”. Сам класс вызывается в представлении Views/Shared/SidebarPartial.cshtml. Плюс компонент Default.cshtml в Views/Shared/Component/Sidebar/.
 
 ## Views <a name="main-section-7"></a>
 Представление делится на 2 части. Это готовый шаблон bootstrap с готовыми стилями, шрифтами и встроенным скриптом JavaScript. Папка: /wwwroot. Суда же вставляем файлы CK-Editor-а. Вторая часть это основная разметка, папка /Views:
