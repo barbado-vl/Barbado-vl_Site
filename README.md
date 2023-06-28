@@ -13,6 +13,29 @@
 - [Views](#main-section-7)
 
 ## Технологии и зависимости <a name="main-section-1"></a>
+Среда разработки, IDE – Visual Studio 2019
+
+БД – MS SQL Server 2019
+ORM – Entity Framework Core
+
+Платформа: .NET 6 и ASP.NET Core 
+Шаблон: ASP.NET Core MVC
+
+Frontend – готовая bootstrap разметка со стилями с SASS с сайта https://html5up.net.
+Редактор – CK-Editor.
+
+Пакеты:
+  - ORM и окружение:
+    - Microsoft.EntityFrameworkCore
+    - Microsoft.EntityFrameworkCore.Design
+    - Microsoft.EntityFrameworkCore.SqlServer
+    - Microsoft.EntityFrameworkCore.Identity
+  - Журнал – Microsoft.Extentions.Logging.Debug
+  - Scaffolding для ASP.NET Core– Microsoft.VisualStudio.Web.CodeGeneration.Design
+
+Расширения для Visual Studio. Оптимизация web-assets и JS скриптов:
+  - Web Compiler (создаем файл compileconfig.json)
+  - Bundler & Minifire (создали файл bundleconfig.json и script.js, объединяющий js файлы. Ссылка на это файл лежит в ScriptPartial.cshtml)
 
 
 ## Структура и архитектура проекта <a name="main-section-2"></a>
